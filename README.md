@@ -91,7 +91,7 @@ Hit that URL and you're ready! It doesn't do auto-reloads though.
 
 While you can use Azure DevOps to "build-in" your environment variables, _you should remember that the application is only built once, in the staging environment_. It is not re-built for the production environment, just swapped from the staging to the production slot. While it may sound counter-intuitive, this is _better_ (same artifact) and you should be able to fully trust the swapped environment since the exact same code has been out and used. It also makes it harder to do dumb things like building in hard-coded stage-based variables.
 
-To do stage-specific configuration, you should use the App Settings for your Function App instead.
+To do stage-specific configuration, you should [use the App Settings for your Function App](https://docs.microsoft.com/en-us/azure/azure-functions/functions-how-to-use-azure-function-app-settings) instead. The demo application is wired to accept a `DEMO_VAR` variable in its environment. Use that to toy around with application settings/variables.
 
 **NOTE!**
 _Your Node version will need to be 12_ (or whatever version is used on Azure). One way of handling multiple Node versions is with [`nvm`](https://github.com/nvm-sh/nvm). If you are set on using it, these instructions should get you up and ready for development:
