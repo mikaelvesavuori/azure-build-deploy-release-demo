@@ -1,0 +1,50 @@
+trigger:
+  branches:
+    include:
+      - master
+
+strategy:
+  matrix:
+    Windows_Node12:
+      imageName: 'vs2017-win2016'
+      node_version: 12.x
+
+variables:
+  - name: SERVICE_CONNECTION_NAME
+    value: service-connection-arm-pipeline
+  - name: SERVICE_NAME
+    value: azure-build-deploy-release # Mapped to the base service name in serverless.yml
+  - name: RESOURCE_GROUP
+    value: AzureReleaseDemo # This is a pre-created "production-specific" group
+  - name: SECONDARY_SLOT
+    value: staging
+  - name: FILEPATH
+    value: .serverless/${{ variables.SERVICE_NAME }}.zip
+
+pool:
+  vmImage: $(imageName)
+
+steps:
+  - template: template.yml
+  - bash: |
+      echo 'Deploying application to secondary ("staging") slot: "${{ variables['Build.SourceBranchName'] }}"'
+      sls package --service ${{ variables.SERVICE_NAME}}
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: ${{ variables.SERVICE_CONNECTION_NAME }}
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: |
+        az functionapp deployment source config-zip \
+          --resource-group $RESOURCE_GROUP \
+          --slot $SECONDARY_SLOT \
+          --name $SERVICE_NAME \
+          --src $FILEPATH
+    env:
+      AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
+      AZURE_TENANT_ID: $(AZURE_TENANT_ID)
+      AZURE_CLIENT_ID: $(AZURE_CLIENT_ID)
+      AZURE_CLIENT_SECRET: $(AZURE_CLIENT_SECRET)
+      FUNCTIONS_WORKER_RUNTIME: $(FUNCTIONS_WORKER_RUNTIME)
+      WEBSITE_RUN_FROM_PACKAGE: 1
+    displayName: 'Master: Deploy Serverless backend to staging slot'

@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug sls local",
+      "program": "${workspaceFolder}/node_modules/serverless/bin/serverless",
+      "args": ["offline", "-s", "dev"],
+      "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"],
+      "sourceMaps": true,
+      "env": {
+        "languageWorkers__node__arguments": "--inspect=5858",
+        "AZURE_FUNCTIONS_ENVIRONMENT": "Development"
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Serverless",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "debug"],
+      "outFiles": ["${workspaceFolder}/.webpack/**/*.js"],
+      "sourceMaps": true
+    }
+  ]
+}

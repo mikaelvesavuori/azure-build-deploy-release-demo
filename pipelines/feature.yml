@@ -1,0 +1,34 @@
+trigger:
+  branches:
+    include:
+      - feature/*
+
+strategy:
+  matrix:
+    Windows_Node12:
+      imageName: 'vs2017-win2016'
+      node_version: 12.x
+
+variables:
+  - name: SERVICE_NAME
+    value: azure-build-deploy-release # Mapped to the base service name in serverless.yml
+  - name: STAGE
+    value: ${{ variables['Build.SourceBranchName'] }}
+
+pool:
+  vmImage: $(imageName)
+
+steps:
+  - template: template.yml
+  - bash: |
+      echo 'Source branch name: "${{ variables['Build.SourceBranchName'] }}"'
+      echo 'Deploying application into feature-specific stage: "${{ variables.STAGE }}"'
+      sls deploy --service ${{ variables.SERVICE_NAME}} --stage ${{ variables.STAGE }}
+    env:
+      AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
+      AZURE_TENANT_ID: $(AZURE_TENANT_ID)
+      AZURE_CLIENT_ID: $(AZURE_CLIENT_ID)
+      AZURE_CLIENT_SECRET: $(AZURE_CLIENT_SECRET)
+      FUNCTIONS_WORKER_RUNTIME: $(FUNCTIONS_WORKER_RUNTIME)
+      WEBSITE_RUN_FROM_PACKAGE: 1
+    displayName: 'Feature: Deploy Serverless backend'

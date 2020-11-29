@@ -1,0 +1,34 @@
+service: ${opt:service, 'azure-build-deploy-release'}
+
+frameworkVersion: '2'
+
+provider:
+  name: azure
+  runtime: nodejs12
+  region: ${opt:region, 'West Europe'}
+  stage: ${opt:stage, 'prod'}
+  type: 'Consumption'
+
+plugins:
+  - serverless-azure-functions
+  - serverless-webpack
+
+package:
+  exclude:
+    - local.settings.json
+    - .vscode/**
+
+functions:
+  demoFunction:
+    handler: src/index.demoFunction
+    events:
+      - http: true
+        x-azure-settings:
+          name: req
+          methods:
+            - GET
+          authLevel: anonymous
+      - http: true
+        x-azure-settings:
+          name: $return
+          direction: out

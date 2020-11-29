@@ -1,0 +1,15 @@
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: 12.x #$(node_version)
+    displayName: 'Install Node.js'
+
+  - bash: |
+      npm install -g serverless
+    displayName: 'Install Serverless'
+
+  - bash: |
+      set -euo pipefail
+      npm ci
+      npm test
+    displayName: 'Install dependencies and run tests'

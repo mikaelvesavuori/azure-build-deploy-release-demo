@@ -1,0 +1,47 @@
+trigger:
+  branches:
+    include:
+      - master
+  tags:
+    include:
+      - "*"
+  paths:
+    exclude:
+      - /*
+
+strategy:
+  matrix:
+    Windows_Node12:
+      imageName: 'vs2017-win2016'
+      node_version: 12.x
+
+variables:
+  - name: SERVICE_CONNECTION_NAME
+    value: service-connection-arm-pipeline
+  - name: SERVICE_NAME
+    value: azure-build-deploy-release # Mapped to the base service name in serverless.yml
+  - name: RESOURCE_GROUP
+    value: AzureReleaseDemo # This is a pre-created "production-specific" group
+  - name: SECONDARY_SLOT
+    value: staging
+  - name: PROD_SLOT
+    value: production
+
+pool:
+  vmImage: $(imageName)
+
+steps:
+  - bash: |
+      echo 'Switching slot from secondary/inactive slot ("staging") to production slot: "${{ variables['Build.SourceBranchName'] }}"'
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: ${{ variables.SERVICE_CONNECTION_NAME }}
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: |
+        az functionapp deployment slot swap \
+          --resource-group $RESOURCE_GROUP \
+          --name $SERVICE_NAME \
+          --slot $SECONDARY_SLOT \
+          --target-slot $PROD_SLOT
+    displayName: 'Release to production'
