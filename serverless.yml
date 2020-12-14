@@ -27,7 +27,7 @@ functions:
           name: req
           methods:
             - GET
-          authLevel: anonymous
+          authLevel: function
       - http: true
         x-azure-settings:
           name: $return

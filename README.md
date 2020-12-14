@@ -48,7 +48,9 @@ Please read the below before actually starting to work:
 5. Run `sh scripts/init.sh` or `npm run init` to create Azure infrastructure
 6. Run `sh scripts/devops-pipelines.sh` to create the Azure DevOps pipelines
 7. **Push your Git repo to Azure DevOps**. Follow instructions inside Azure DevOps for how to do this.
-8. **Once the application has been deployed the first time, you can import the Function App as an API for API Management**. Refer to [https://docs.microsoft.com/en-us/azure/api-management/import-function-app-as-api](https://docs.microsoft.com/en-us/azure/api-management/import-function-app-as-api) on how to do this. This step is unfortunately (AFAIK) not possible to automate with Bash or Powershell at the time of writing. If you skip this step, nothing bad will happen, other than that you will have an un-used API instance. You can still (with the configuration I provide) anonymously (openly) call the function itself. I'd still urge you to put the API in front of the function.
+8. **Once the application has been deployed the first time, you should import the Function App as an API for API Management**. Refer to [https://docs.microsoft.com/en-us/azure/api-management/import-function-app-as-api](https://docs.microsoft.com/en-us/azure/api-management/import-function-app-as-api) on how to do this. This step is unfortunately (AFAIK) not possible to automate with Bash or Powershell at the time of writing. If you skip this step, nothing bad will happen, other than that you will have an un-used API instance. The `serverless.yml` configuration sets your function to allow only calls coming from the API Management instance.
+
+If your application is not visible, this is because the app has not been deployed yet to the non-staging deployment slot. You can also do this through the provided npm commands (see `package.json`).
 
 With the above you should now have gone full circle. Congratulations!
 

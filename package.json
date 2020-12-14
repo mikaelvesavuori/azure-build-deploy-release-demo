@@ -1,6 +1,6 @@
 {
   "name": "azure-build-deploy-release-demo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Modern Azure build-deploy-release pipeline demo (Azure Functions, DevOps)",
   "main": "index.js",
   "scripts": {
@@ -8,32 +8,35 @@
     "init:devops": "sh scripts/devops-pipelines.sh",
     "start": "sls offline",
     "debug": "export SLS_DEBUG=* && node --inspect node_modules/serverless/bin/serverless offline -s dev",
-    "lint": "eslint '*/**/*.{js,ts}' --quiet --fix"
+    "lint": "eslint '*/**/*.{js,ts}' --quiet --fix",
+    "deploy": "npm run package && npm run upload",
+    "package": "sls package --service azurebuilddeployrelease",
+    "upload": "az functionapp deployment source config-zip --name azurebuilddeployrelease --resource-group AzureReleaseDemo --slot staging --src ./.serverless/azurebuilddeployrelease.zip",
+    "swap": "az functionapp deployment slot swap --name azurebuilddeployrelease --resource-group AzureReleaseDemo --slot staging --target-slot production"
   },
   "author": "Mikael Vesavuori",
   "license": "MIT",
   "dependencies": {
-    "@azure/app-configuration": "^1.1.0",
     "@azure/functions": "^1.2.2"
   },
   "devDependencies": {
-    "azure-functions-core-tools": "^2.7.3023",
-    "serverless": "^2.13.0",
-    "@babel/preset-env": "^7.12.7",
+    "azure-functions-core-tools": "^2.7.3188",
+    "serverless": "^2.15.0",
+    "@babel/preset-env": "^7.12.10",
     "@babel/preset-typescript": "^7.12.7",
-    "@babel/types": "^7.12.7",
-    "@types/node": "^14.14.10",
-    "@typescript-eslint/eslint-plugin": "^4.8.2",
-    "@typescript-eslint/parser": "^4.8.2",
+    "@babel/types": "^7.12.10",
+    "@types/node": "^14.14.13",
+    "@typescript-eslint/eslint-plugin": "^4.10.0",
+    "@typescript-eslint/parser": "^4.10.0",
     "babel-loader": "^8.2.2",
-    "eslint": "^7.14.0",
-    "eslint-config-prettier": "^6.15.0",
+    "eslint": "^7.15.0",
+    "eslint-config-prettier": "^7.0.0",
     "prettier": "^2.2.1",
     "serverless-azure-functions": "^2.1.0",
     "serverless-webpack": "^5.3.5",
-    "ts-loader": "^8.0.11",
-    "typescript": "^4.1.2",
-    "webpack": "^5.9.0",
+    "ts-loader": "^8.0.12",
+    "typescript": "^4.1.3",
+    "webpack": "^5.10.1",
     "webpack-cli": "^4.2.0"
   }
 }

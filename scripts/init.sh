@@ -1,18 +1,11 @@
 #!/usr/bin/env bash
 
 ###################
-#  Plan & group   #
+#      Group      #
 ###################
 
 # Create resource group
 az group create --location $LOCATION --name $RG
-
-# Create plan
-az appservice plan create \
-  --name $PLAN_NAME \
-  --resource-group $RG \
-  --location $LOCATION \
-  --sku $PLAN
 
 ###################
 #     Storage     #
@@ -39,7 +32,6 @@ az functionapp create \
   --name $APP_NAME \
   --resource-group $RG \
   --consumption-plan-location $LOCATION \
-  --plan $PLAN_NAME \
   --os-type $OS \
   --runtime $RUNTIME \
   --runtime-version 12 \
@@ -78,7 +70,6 @@ az apim create \
   --location $LOCATION \
   --name $API_SERVICE_NAME \
   --sku-name $API_PLAN \
-  --enable-client-certificate \
   --publisher-email $PUBLISHER_EMAIL \
   --publisher-name $PUBLISHER_NAME
 
